@@ -1,0 +1,1 @@
+# rehype-clangd-highlight
