@@ -1,7 +1,7 @@
 {
-  "name": "rehype-clangd-highlight",
+  "name": "remark-lsp-highlight",
   "version": "1.0.0",
-  "description": "semantic highlighting for c/cxx",
+  "description": "semantic highlighting for languages",
   "main": "dist/index.js",
   "scripts": {
     "compile": "tsc -watch -p ./",

@@ -15,6 +15,7 @@ export async function startClangd(args: Array<string> = []): Promise<[any, Clang
   // })
   const res = await connection.sendRequest('initialize', {
     processId: null, rootUri: null, trace: 'verbose', capabilities: {
+      offsetEncoding: ["utf-8"],
       textDocument: {
         documentSymbol: {},
         semanticTokens: {
@@ -111,7 +112,7 @@ function HighlightDataFromArray(tokenTypes: string[], tokenModifiers: string[], 
     line: data[0],
     startChar: data[1],
     length: data[2],
-    tokenType: tokenTypes[Math.floor(Math.log2(data[3]))],
+    tokenType: tokenTypes[data[3]],
     tokenModifiers: modifier,
   }
 }
