@@ -1,6 +1,6 @@
 {
   "name": "@mgtd/semantic-token-provider",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "providing semantic tokens",
   "main": "dist/index.js",
   "scripts": {

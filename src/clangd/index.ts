@@ -59,9 +59,9 @@ export async function getTokens(args: Array<string> = [], path: string): Promise
     }
   })
   const scope = cap.capabilities.semanticHighlighting.scopes
-  await connection.sendNotification('initialized')
+  connection.sendNotification('initialized')
   const uri = URI.file(path)
-  await connection.sendNotification('textDocument/didOpen', {
+  connection.sendNotification('textDocument/didOpen', {
     textDocument: {
       uri: uri.toString(),
       languageId: 'cpp',

@@ -1,7 +1,7 @@
 import { getTokens } from '.'
 
 const f = async () => {
-  const data = await getTokens(['-log=verbose'], 'C:\\Users\\mgt\\Desktop\\project\\rehype-clangd-highlight\\test.cpp')
+  const data = await getTokens(['-log=verbose'], `c:\\Users\\mgt\\AppData\\Local\\Temp\\b33fde86.cpp`)
   data.map(({ tokens, line }) => console.log(line, tokens))
 }
 
