@@ -5,7 +5,7 @@
     "target": "es6",
     "outDir": "dist",
     "sourceMap": true,
-    "rootDir": ".",
+    "rootDir": "./src",
     "alwaysStrict": false,
   },
   "include": [

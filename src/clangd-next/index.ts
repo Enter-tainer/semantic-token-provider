@@ -14,10 +14,12 @@ export async function startClangd(args: Array<string> = []): Promise<[any, Clang
   //   console.error((data as Buffer).toString('utf-8'))
   // })
   const res = await connection.sendRequest('initialize', {
-    processId: null, rootUri: null, trace: 'verbose', capabilities: {
+    processId: null,
+    rootUri: null,
+    trace: 'verbose',
+    capabilities: {
       offsetEncoding: ["utf-8"],
       textDocument: {
-        documentSymbol: {},
         semanticTokens: {
           requests: {
             full: true

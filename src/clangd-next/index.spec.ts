@@ -1,4 +1,4 @@
-import { startClangd, getHighlightData, parseHighlightData } from './clangd'
+import { startClangd, getHighlightData, parseHighlightData } from '.'
 
 const f = async () => {
   const [l, c] = await startClangd(['-log=verbose'])
