@@ -3,17 +3,18 @@ import * as rpc from 'vscode-jsonrpc'
 import * as fs from 'fs/promises'
 import { URI } from 'vscode-uri'
 
-// A SemanticHighlightingToken decoded from the base64 data sent by clangd.
-interface SemanticHighlightingToken {
-  // Start column for this token.
-  character: number;
-  // Length of the token.
-  length: number;
-  // The TextMate scope index to the clangd scope lookup table.
-  scope: string[];
+interface IToken {
+  startIndex: number,
+  endIndex: number,
+  scopes: string[]
 }
 
-export function decodeTokens(tokens: string, scope: string[][]): SemanticHighlightingToken[] {
+interface ITokenResult {
+  tokens: IToken[],
+  line: number
+}
+
+export function decodeTokens(tokens: string, scope: string[][]): IToken[] {
   const scopeMask = 0xFFFF;
   const lenShift = 0x10;
   const uint32Size = 4;
@@ -24,14 +25,14 @@ export function decodeTokens(tokens: string, scope: string[][]): SemanticHighlig
     const lenKind = buf.readUInt32BE((i + 1) * uint32Size);
     const scopeIndex = lenKind & scopeMask;
     const len = lenKind >>> lenShift;
-    retTokens.push({ character: start, scope: scope[scopeIndex], length: len });
+    retTokens.push({ startIndex: start, scopes: scope[scopeIndex], endIndex: len + start });
   }
 
   return retTokens;
 }
 
 export type Clangd = rpc.MessageConnection
-export async function getTokens(args: Array<string> = [], path: string): Promise<any> {
+export async function getTokens(args: Array<string> = [], path: string): Promise<ITokenResult[]> {
   const clangd = cp.spawn('clangd', args, { windowsHide: false, detached: true })
   let connection = rpc.createMessageConnection(
     new rpc.StreamMessageReader(clangd.stdout),
@@ -39,14 +40,15 @@ export async function getTokens(args: Array<string> = [], path: string): Promise
   let notification = new rpc.NotificationType<string, void>('textDocument/semanticHighlighting')
   const p = new Promise((resolve, reject) => {
     connection.onNotification(notification, (param: any) => {
+      //@ts-ignore
       param.lines = param.lines.map(({ tokens, ...data }) => ({ tokens: decodeTokens(tokens, scope), ...data }))
       resolve(param)
     })
-  }) 
-  connection.listen()
-  clangd.stderr.on('data', (data) => {
-    console.error((data as Buffer).toString('utf-8'))
   })
+  connection.listen()
+  // clangd.stderr.on('data', (data) => {
+  //   console.error((data as Buffer).toString('utf-8'))
+  // })
   const cap: any = await connection.sendRequest('initialize', {
     processId: null, rootUri: null, trace: 'verbose', capabilities: {
       textDocument: {
@@ -67,13 +69,14 @@ export async function getTokens(args: Array<string> = [], path: string): Promise
       text: await readFileToString(path)
     }
   })
-  const res = await p
+  const res: { lines: ITokenResult[] } = (await p) as any
   connection.sendNotification('textDocument/didClose', {
     textDocument: {
       uri: uri.toString()
     }
   })
-  return res
+  clangd.kill()
+  return res.lines
 }
 
 async function readFileToString(path: string): Promise<string> {
