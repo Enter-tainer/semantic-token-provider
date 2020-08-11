@@ -1,10 +1,12 @@
 {
-  "name": "semantic-token-provider",
+  "name": "@mgtd/semantic-token-provider",
   "version": "1.0.0",
   "description": "providing semantic tokens",
   "main": "dist/index.js",
   "scripts": {
     "compile": "tsc -watch -p ./",
+    "build": "tsc",
+    "prepublish": "npm run build",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "mgt",
@@ -15,8 +17,11 @@
     "vscode-uri": "^2.1.2"
   },
   "devDependencies": {
-    "@tsconfig/node12": "^1.0.7",
+    "@tsconfig/recommended": "^1.0.1",
     "@types/node": "^14.0.27",
     "typescript": "^3.9.7"
+  },
+  "publishConfig": {
+    "access": "public"
   }
 }
