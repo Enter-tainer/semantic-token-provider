@@ -1,6 +1,7 @@
 import * as cp from 'child_process'
 import * as rpc from 'vscode-jsonrpc'
-import * as fs from 'fs/promises'
+import * as fs from 'fs'
+import { promisify } from 'util'
 import { URI } from 'vscode-uri'
 
 interface IToken {
@@ -80,5 +81,5 @@ export async function getTokens(args: Array<string> = [], path: string): Promise
 }
 
 async function readFileToString(path: string): Promise<string> {
-  return fs.readFile(path, 'utf-8')
+  return promisify(fs.readFile)(path, 'utf-8')
 }
